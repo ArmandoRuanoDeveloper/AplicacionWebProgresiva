@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.info.BuildProperties;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.ApplicationContext;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.ZoneId;
@@ -17,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 
 @SpringBootApplication
 @EnableScheduling
+@EnableAsync
 @EnableFeignClients
 @Slf4j
 
