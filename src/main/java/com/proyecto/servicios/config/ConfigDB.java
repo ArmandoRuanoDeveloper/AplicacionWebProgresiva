@@ -69,7 +69,11 @@ public class ConfigDB {
           em.setPackagesToScan(
                   "com.proyecto.servicios.entity.sf",
                   "com.proyecto.servicios.entity.gestopago",
-                  "com.proyecto.servicios.entity.producto"
+                  "com.proyecto.servicios.entity.producto",
+                  "com.proyecto.servicios.entity.biometria",
+                  "com.proyecto.servicios.entity.usuario",
+                  "com.proyecto.servicios.entity.cliente",
+                  "com.proyecto.servicios.entity.cuenta"
           );
           em.setPersistenceUnitName("sfDatasource");
             HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
