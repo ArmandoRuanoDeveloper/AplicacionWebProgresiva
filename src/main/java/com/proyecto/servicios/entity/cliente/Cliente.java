@@ -7,6 +7,9 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.proyecto.servicios.entity.cuenta.Cuenta;
 
 @Entity
 @Table(name = "clientes")
@@ -78,6 +81,9 @@ public class Cliente {
 
     @Column(name = "fecha_actualizacion", nullable = false)
     private LocalDateTime fechaActualizacion;
+
+    @OneToMany(mappedBy = "cliente", fetch = FetchType.LAZY)
+    private List<Cuenta> cuentas;
 
     @PrePersist
     void onCreate() {
