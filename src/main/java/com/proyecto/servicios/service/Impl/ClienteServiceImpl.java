@@ -18,6 +18,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.proyecto.servicios.entity.cuenta.Cuenta;
+import com.proyecto.servicios.model.onboarding.ClienteBusquedaRequest;
+import com.proyecto.servicios.repositorys.cliente.ClienteSpecification;
+import org.springframework.data.domain.Sort;
+import java.util.ArrayList;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -82,7 +87,10 @@ public class ClienteServiceImpl implements ClienteService {
         cliente.setDomicilio(domicilio);
         clienteRepository.save(cliente);
 
-        cuentaService.crearCuentaParaCliente(cliente);
+        Cuenta cuenta = cuentaService.crearCuentaParaCliente(cliente);
+        List<Cuenta> cuentas = new ArrayList<>();
+        cuentas.add(cuenta);
+        cliente.setCuentas(cuentas);
 
         Rol rolCliente = rolRepository.findByNombre(ROL_CLIENTE)
                 .orElseThrow(() -> new IllegalStateException("No existe el rol CLIENTE en la base de datos"));
@@ -138,13 +146,22 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
+    public List<Cliente> buscar(ClienteBusquedaRequest filtros) {
+        return clienteRepository.findAll(ClienteSpecification.desde(filtros), Sort.by("id"));
+    }
+
+    @Override
     @Transactional
     public Cliente actualizarCliente(Integer id, ClienteActualizacionRequest request) {
         Cliente cliente = obtenerPorId(id);
 
-        if (!cliente.getCorreo().equals(request.getCorreo()) && clienteRepository.existsByCorreo(request.getCorreo())) {
+        if (!cliente.getCorreo().equals(request.getCorreo())
+                && (clienteRepository.existsByCorreo(request.getCorreo())
+                    || usuarioRepository.existsByCorreo(request.getCorreo()))) {
             throw new CorreoDuplicadoException("Ya existe un cliente registrado con ese correo");
         }
+
+        usuarioRepository.findByClienteId(id).ifPresent(u -> u.setCorreo(request.getCorreo()));
 
         Domicilio domicilio = cliente.getDomicilio();
         DomicilioRequest dReq = request.getDomicilio();

@@ -16,6 +16,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.time.LocalDateTime;
 
 @Configuration
 public class SecurityConfig {
@@ -36,7 +39,9 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
+                .exceptionHandling(e -> e
+                    .authenticationEntryPoint((req, res, ex) -> escribirError(res, 401, "No autenticado: falta el token o es inválido"))
+                    .accessDeniedHandler((req, res, ex) -> escribirError(res, 403, "No tienes permisos para realizar esta acción")))
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/login").permitAll()
                     .requestMatchers(HttpMethod.POST, "/clientes").permitAll()
@@ -59,5 +64,13 @@ public class SecurityConfig {
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
         return config.getAuthenticationManager();
+    }
+
+        private static void escribirError(HttpServletResponse res, int status, String mensaje) throws IOException {
+        res.setStatus(status);
+        res.setCharacterEncoding("UTF-8");
+        res.setContentType("application/json");
+        res.getWriter().write("{\"timestamp\":\"" + LocalDateTime.now() + "\",\"status\":" + status
+                + ",\"mensaje\":\"" + mensaje + "\"}");
     }
 }

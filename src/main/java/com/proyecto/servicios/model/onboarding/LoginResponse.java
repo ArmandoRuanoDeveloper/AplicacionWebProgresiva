@@ -1,10 +1,12 @@
 package com.proyecto.servicios.model.onboarding;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class LoginResponse {
-    private String token;
+    private final String token;
+
+    public LoginResponse(String token) {
+        this.token = token;
+    }
 }
