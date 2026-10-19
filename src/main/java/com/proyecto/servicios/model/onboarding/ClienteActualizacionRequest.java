@@ -12,6 +12,10 @@ import java.util.Locale;
 @Setter
 public class ClienteActualizacionRequest {
 
+    @NotNull(message = "El id del cliente es obligatorio")
+    @Positive(message = "El id del cliente debe ser un número positivo")
+    private Integer id;
+
     @NotBlank(message = "El nombre es obligatorio")
     @Size(min = 2, max = 50, message = "El nombre debe tener entre 2 y 50 caracteres")
     @Pattern(regexp = Reglas.NOMBRE, message = "El nombre solo puede contener letras, con un solo espacio entre palabras")
@@ -47,6 +51,7 @@ public class ClienteActualizacionRequest {
     private String estadoCivil;
 
     @NotBlank(message = "El correo es obligatorio")
+    @Email(message = "El formato del correo no es válido")
     @Size(max = 100, message = "El correo debe tener máximo 100 caracteres")
     @Pattern(regexp = Reglas.CORREO, message = "El formato del correo no es válido")
     private String correo;

@@ -72,6 +72,7 @@ public class ClienteRegistroRequest {
     private String estadoCivil;
 
     @NotBlank(message = "El correo es obligatorio")
+    @Email(message = "El formato del correo no es válido")
     @Size(max = 100, message = "El correo debe tener máximo 100 caracteres")
     @Pattern(regexp = Reglas.CORREO, message = "El formato del correo no es válido")
     private String correo;

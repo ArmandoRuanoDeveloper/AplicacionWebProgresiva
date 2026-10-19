@@ -1,6 +1,7 @@
 package com.proyecto.servicios.repositorys.cliente;
 
 import com.proyecto.servicios.entity.cliente.Cliente;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
+public interface ClienteRepository extends JpaRepository<Cliente, Integer>, JpaSpecificationExecutor<Cliente> {
 
     Optional<Cliente> findByCurp(String curp);
     Optional<Cliente> findByRfc(String rfc);
